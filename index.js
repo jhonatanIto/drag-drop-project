@@ -10,6 +10,11 @@ let explainAdd = document.getElementById('explainAdd');
 let concludedAdd = document.getElementById('concludedAdd');
 let root = document.getElementById('root');
 
+let cards = JSON.parse(localStorage.getItem("dragCards")) || [];
+cards.forEach(el => {
+  createCards(el)
+  draggable()
+});
 
 let selected = null;
 
@@ -32,6 +37,7 @@ explainColumn.addEventListener("dragover", function(e){
 explainColumn.addEventListener("drop", function(e){
   if(selected) {
       explainBox.appendChild(selected);
+      update(explainBox)
       selected = null;
   }
     
@@ -45,6 +51,7 @@ searchColumn.addEventListener("dragover", function(e){
 searchColumn.addEventListener("drop", function(e){
   if(selected) {
       searchBox.appendChild(selected);
+      update(searchBox)
       selected = null;
   }
     
@@ -57,6 +64,7 @@ concludedColumn.addEventListener("dragover", function(e){
 concludedColumn.addEventListener("drop", function(e){
   if(selected) {
       concluded.appendChild(selected);
+      update(concluded)
       selected = null;
   }
     
@@ -84,6 +92,10 @@ function modal(column){
       text.innerHTML = input.value;
       text.classList.add('text');
       column.appendChild(text)
+
+      cards.push({text: input.value, column: column.id});
+      localStorage.setItem("dragCards",JSON.stringify(cards));
+
       input.value = ""
       modalBody.style.display = 'none'
       draggable()
@@ -97,6 +109,13 @@ function modal(column){
   })
 }
 
+function createCards(element){
+    let text = document.createElement('div');
+    text.innerHTML = element.text;
+    text.classList.add('text');  
+    let container = document.getElementById(element.column)
+    container.appendChild(text);     
+}
 
 searchAdd.addEventListener('click', function(){
   modal(searchBox)
@@ -109,3 +128,12 @@ explainAdd.addEventListener('click', function(){
 concludedAdd.addEventListener('click', function(){
   modal(concluded)
 });
+
+function update(box){
+  let textContent = selected.innerHTML;
+  let card = cards.find(c => c.text === textContent);
+  if (card) {
+      card.column = box.id;
+      localStorage.setItem("dragCards", JSON.stringify(cards));
+    }
+}
