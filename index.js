@@ -9,6 +9,7 @@ let searchAdd = document.getElementById('searchAddBox');
 let explainAdd = document.getElementById('explainAdd');
 let concludedAdd = document.getElementById('concludedAdd');
 let root = document.getElementById('root');
+let trash = document.getElementById('trash');
 
 let cards = JSON.parse(localStorage.getItem("dragCards")) || [];
 cards.forEach(el => {
@@ -85,20 +86,19 @@ function modal(column){
   input.classList.add('modalInput');
   modalBody.id = 'modalBody';
   input.placeholder = 'Insert here'
+  input.focus();
 
   input.addEventListener("keydown", function(e){
     if(e.key ==='Enter' && input.value !== ""){
-      let text = document.createElement('div');
-      text.innerHTML = input.value;
-      text.classList.add('text');
-      column.appendChild(text)
 
       cards.push({text: input.value, column: column.id});
       localStorage.setItem("dragCards",JSON.stringify(cards));
-
-      input.value = ""
       modalBody.style.display = 'none'
+
+      const what = (cards.find(t => t.text === input.value))
+      createCards(what)
       draggable()
+      input.value = ""
     }
   })
   modalBody.addEventListener("click", function(e){
@@ -113,7 +113,7 @@ function createCards(element){
     let text = document.createElement('div');
     text.innerHTML = element.text;
     text.classList.add('text');  
-    let container = document.getElementById(element.column)
+    let container = document.getElementById(element.column);
     container.appendChild(text);     
 }
 
@@ -137,3 +137,19 @@ function update(box){
       localStorage.setItem("dragCards", JSON.stringify(cards));
     }
 }
+
+function trashF(){
+  trash.addEventListener("dragover", function(e){
+    e.preventDefault();
+  });
+
+  trash.addEventListener("drop", function(e){
+    const deleteCard = cards.find(d => d.text === selected.innerHTML)
+    cards = cards.filter(item => item !== deleteCard)
+    localStorage.setItem("dragCards", JSON.stringify(cards));
+    selected.remove()
+    console.log(cards)
+  })
+}
+
+trashF()

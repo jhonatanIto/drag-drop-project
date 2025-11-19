@@ -92,3 +92,23 @@ header{
   border-radius: 5px;
  border-color: rgb(163, 163, 163);
 }
+
+.root{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+}
+
+.trash{
+  border-radius: 10px;
+  width: 55px;
+}
+.trash:hover{
+  cursor: pointer;
+}
+.static{
+  position: fixed;
+  margin-left: 15%;
+  margin-top: 600px;
+}
